@@ -33,28 +33,28 @@ export default function Home() {
     ? (lbService.images?.length ? lbService.images.map(img => ({ image: img.url, title: lbService.name })) : [{ image: lbService.image || '', title: lbService.name }])
     : []
 
-  const approvedReviews = reviews.filter(r => r.isApproved !== false).slice(0, 5)
+  const approvedReviews = reviews.filter(r => r.isApproved !== false)
 
   const renderTestimonial = (r) => (
-    <div className="w-full p-6 md:p-12 text-center space-y-4 md:space-y-6">
+    <div className="h-full p-5 md:p-6 text-center space-y-3 flex flex-col">
       {r.image && r.image !== '' ? (
         <div className="flex justify-center">
-          <div className="w-16 md:w-20 h-16 md:h-20 rounded-full ring-2 ring-primary/30 ring-offset-2 ring-offset-base-100 overflow-hidden">
+          <div className="w-14 md:w-16 h-14 md:h-16 rounded-full ring-2 ring-primary/30 ring-offset-2 ring-offset-base-100 overflow-hidden">
             <img src={r.image} alt={r.name} className="w-full h-full object-cover" />
           </div>
         </div>
       ) : (
-        <div className="w-16 md:w-20 h-16 md:h-20 rounded-full ring-2 ring-primary/30 ring-offset-2 ring-offset-base-100 bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-xl md:text-2xl mx-auto">
+        <div className="w-14 md:w-16 h-14 md:h-16 rounded-full ring-2 ring-primary/30 ring-offset-2 ring-offset-base-100 bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-lg mx-auto">
           {r.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
         </div>
       )}
-      <div className="flex justify-center gap-1 text-yellow-400">
+      <div className="flex justify-center gap-0.5 text-yellow-400">
         {Array.from({ length: 5 }).map((_, s) => (
-          <Star key={s} className={`size-4 md:size-5 ${s < r.rating ? 'fill-current' : 'opacity-30'}`} />
+          <Star key={s} className={`size-4 ${s < r.rating ? 'fill-current' : 'opacity-30'}`} />
         ))}
       </div>
-      <p className="text-base md:text-xl text-base-content/70 italic leading-relaxed max-w-2xl mx-auto">"{r.text}"</p>
-      <p className="font-semibold text-sm md:text-base">{r.name}</p>
+      <p className="text-sm md:text-base text-base-content/70 italic leading-relaxed line-clamp-4 flex-1">"{r.text}"</p>
+      <p className="font-semibold text-sm">{r.name}</p>
     </div>
   )
 
