@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Star, Heart, Send } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { Star, Heart, Send, Camera, X } from 'lucide-react'
 import { useMutation } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
@@ -9,15 +9,43 @@ import AnimatedSection from '../components/ui/AnimatedSection'
 export default function FeedbackPage() {
   const [form, setForm] = useState({ name: '', email: '', rating: 5, text: '' })
   const [hoverRating, setHoverRating] = useState(0)
+  const [imageFile, setImageFile] = useState(null)
+  const [preview, setPreview] = useState('')
+  const fileRef = useRef(null)
 
   const mutation = useMutation({
-    mutationFn: (data) => api.post('/reviews', data),
+    mutationFn: async (data) => {
+      let image = ''
+      if (imageFile) {
+        const fd = new FormData()
+        fd.append('image', imageFile)
+        const uploadRes = await api.post('/upload/public', fd)
+        image = uploadRes.data.url
+      }
+      return api.post('/reviews', { ...data, image: image || undefined })
+    },
     onSuccess: () => {
       toast.success('Thank you! Your review will be visible after admin approval.')
       setForm({ name: '', email: '', rating: 5, text: '' })
+      setImageFile(null)
+      setPreview('')
     },
     onError: () => toast.error('Failed to submit review. Please try again.'),
   })
+
+  const handleFile = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 2 * 1024 * 1024) { toast.error('Image must be under 2MB'); return }
+    setImageFile(file)
+    setPreview(URL.createObjectURL(file))
+  }
+
+  const clearImage = () => {
+    setImageFile(null)
+    setPreview('')
+    if (fileRef.current) fileRef.current.value = ''
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -41,6 +69,23 @@ export default function FeedbackPage() {
         <div className="max-w-2xl mx-auto">
           <AnimatedSection variant="fadeUp">
             <form onSubmit={handleSubmit} className="bg-base-100 rounded-2xl shadow-xl border border-base-200 p-6 md:p-10 space-y-6">
+              <div className="flex flex-col items-center gap-3">
+                <button type="button" onClick={() => fileRef.current?.click()} className="relative group">
+                  <div className="w-20 h-20 rounded-full overflow-hidden ring-2 ring-base-300 ring-offset-2 bg-base-200 flex items-center justify-center">
+                    {preview ? (
+                      <img src={preview} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <Camera className="size-7 text-base-content/40" />
+                    )}
+                  </div>
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-[10px] font-medium text-base-content/50 whitespace-nowrap bg-base-100 px-2 py-0.5 rounded-full shadow-sm">Add photo</span>
+                </button>
+                <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} className="hidden" />
+                {preview && (
+                  <button type="button" onClick={clearImage} className="text-xs text-error flex items-center gap-1 hover:underline"><X className="size-3" /> Remove</button>
+                )}
+              </div>
+
               <div className="grid sm:grid-cols-2 gap-5">
                 <label className="form-control">
                   <span className="label-text font-medium mb-1.5 text-sm">Your Name *</span>

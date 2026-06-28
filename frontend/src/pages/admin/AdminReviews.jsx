@@ -59,9 +59,15 @@ export default function AdminReviews() {
             >
               <div className="flex items-start gap-4">
                 <div className="avatar shrink-0">
-                  <div className="w-12 rounded-full ring-2 ring-primary/20">
-                    <img src={r.image || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200'} alt={r.name} />
-                  </div>
+                  {r.image ? (
+                    <div className="w-12 rounded-full ring-2 ring-primary/20">
+                      <img src={r.image} alt={r.name} />
+                    </div>
+                  ) : (
+                    <div className="w-12 rounded-full ring-2 ring-primary/20 bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-sm">
+                      {r.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                    </div>
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">

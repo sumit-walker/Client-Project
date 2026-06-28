@@ -19,3 +19,15 @@ export const uploadMultiple = async (req, res) => {
     res.status(500).json({ message: err.message })
   }
 }
+
+export const uploadPublic = async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ message: 'No file' })
+    res.json({
+      url: req.file.path,
+      cloudinaryId: req.file.filename,
+    })
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
