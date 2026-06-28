@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Plus, Trash2, Pencil, Clock, Package, IndianRupee, Tag, AlignLeft, List, Star, Eye, EyeOff, ImageUp, X, Loader2, Upload, GripVertical } from 'lucide-react'
+import { Plus, Trash2, Pencil, Clock, Package, IndianRupee, Tag, AlignLeft, List, Star, Eye, EyeOff, ImageUp, X, Loader2, Upload } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { motion, Reorder } from 'framer-motion'
+import { motion } from 'framer-motion'
 import api from '../../services/api'
 import { serviceCategories } from '../../utils/helpers'
 import SectionHeader from '../../components/admin/SectionHeader'
@@ -39,10 +39,7 @@ export default function AdminServices() {
     mutationFn: ({ id, data }) => api.put(`/services/${id}`, data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['admin-services'] }); queryClient.invalidateQueries({ queryKey: ['services'] }); toast.success('Updated') },
   })
-  const reorderMutation = useMutation({
-    mutationFn: (items) => api.put('/services/reorder', { items }),
-    onSuccess: (res) => { queryClient.setQueryData(['admin-services'], res.data); queryClient.invalidateQueries({ queryKey: ['services'] }) },
-  })
+
   const deleteMutation = useMutation({
     mutationFn: (id) => api.delete(`/services/${id}`),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['admin-services'] }); queryClient.invalidateQueries({ queryKey: ['services'] }); toast.success('Deleted'); setDeleteTarget(null) },
@@ -252,11 +249,14 @@ export default function AdminServices() {
       ) : services.length === 0 ? (
         <EmptyState icon={Package} title="No services yet" description="Create your first service to start accepting bookings" action={<button onClick={() => setShowForm(true)} className="btn h-11 min-h-11 rounded-xl border-0 bg-primary text-white font-semibold gap-2 shadow-md shadow-primary/30 hover:brightness-110 hover:shadow-lg transition-all"><Plus className="size-4" /> Add Service</button>} />
       ) : (
-        <Reorder.Group axis="y" values={services} onReorder={(ordered) => { queryClient.setQueryData(['admin-services'], ordered); reorderMutation.mutate(ordered.map(({ _id }) => ({ _id }))) }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((s, i) => (
-            <Reorder.Item
+            <motion.div
               key={s._id}
-              value={s}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.04 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
               className={`group bg-base-100 rounded-2xl border overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 ${s.isActive === false ? 'border-base-300 opacity-60' : 'border-base-200'}`}
             >
               <div className="relative h-40 overflow-hidden bg-base-200">
@@ -268,9 +268,6 @@ export default function AdminServices() {
                   <div className="w-full h-full flex items-center justify-center text-base-content/20"><Package className="size-12" /></div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute top-3 left-3 cursor-grab active:cursor-grabbing text-white/60 hover:text-white transition-colors">
-                  <GripVertical className="size-5" />
-                </div>
                 <div className="absolute top-3 right-3 flex gap-2">
                   {s.featured && <span className="badge badge-warning badge-xs shadow-sm gap-1"><Star className="size-2.5" /> Featured</span>}
                   {s.images?.length > 1 && <span className="badge badge-ghost badge-xs shadow-sm">{s.images.length} photos</span>}
@@ -298,36 +295,32 @@ export default function AdminServices() {
                     {s.features.length > 3 && <span className="badge badge-ghost badge-xs">+{s.features.length - 3}</span>}
                   </div>
                 )}
-                <div className="flex items-center justify-between gap-3 mt-4 pt-3 border-t border-base-200">
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => toggleMutation.mutate({ id: s._id, data: { featured: !s.featured } })}
-                      className={`btn btn-ghost btn-xs rounded-lg gap-1.5 px-2.5 ${s.featured ? 'text-warning' : 'text-base-content/50 hover:text-base-content'}`}
-                      disabled={toggleMutation.isPending}
-                    >
-                      <Star className={`size-3.5 ${s.featured ? 'fill-current' : ''}`} /> {s.featured ? 'Featured' : 'Feature'}
-                    </button>
-                    <button
-                      onClick={() => toggleMutation.mutate({ id: s._id, data: { isActive: !s.isActive } })}
-                      className="btn btn-ghost btn-xs rounded-lg gap-1.5 px-2.5 text-base-content/50 hover:text-base-content"
-                      disabled={toggleMutation.isPending}
-                    >
-                      {s.isActive ? <><EyeOff className="size-3.5" /> Hide</> : <><Eye className="size-3.5" /> Show</>}
-                    </button>
-                  </div>
-                  <div className="flex items-center gap-0.5 shrink-0">
-                    <button onClick={() => startEdit(s)} className="btn btn-ghost btn-xs rounded-lg gap-1.5 px-2.5 text-base-content/50 hover:text-base-content">
-                      <Pencil className="size-3.5" /> Edit
-                    </button>
-                    <button onClick={() => setDeleteTarget(s)} className="btn btn-ghost btn-xs rounded-lg gap-1.5 px-2.5 text-base-content/50 hover:text-error">
-                      <Trash2 className="size-3.5" /> Delete
-                    </button>
-                  </div>
+                <div className="flex flex-wrap items-center gap-1 mt-4 pt-3 border-t border-base-200">
+                  <button onClick={() => startEdit(s)} className="btn btn-ghost btn-xs rounded-lg gap-1.5 px-2.5 text-base-content/50 hover:text-base-content">
+                    <Pencil className="size-3.5" /> Edit
+                  </button>
+                  <button onClick={() => setDeleteTarget(s)} className="btn btn-ghost btn-xs rounded-lg gap-1.5 px-2.5 text-base-content/50 hover:text-error">
+                    <Trash2 className="size-3.5" /> Delete
+                  </button>
+                  <button
+                    onClick={() => toggleMutation.mutate({ id: s._id, data: { featured: !s.featured } })}
+                    className={`btn btn-ghost btn-xs rounded-lg gap-1.5 px-2.5 ${s.featured ? 'text-warning' : 'text-base-content/50 hover:text-base-content'}`}
+                    disabled={toggleMutation.isPending}
+                  >
+                    <Star className={`size-3.5 ${s.featured ? 'fill-current' : ''}`} /> {s.featured ? 'Featured' : 'Feature'}
+                  </button>
+                  <button
+                    onClick={() => toggleMutation.mutate({ id: s._id, data: { isActive: !s.isActive } })}
+                    className="btn btn-ghost btn-xs rounded-lg gap-1.5 px-2.5 text-base-content/50 hover:text-base-content"
+                    disabled={toggleMutation.isPending}
+                  >
+                    {s.isActive ? <><EyeOff className="size-3.5" /> Hide</> : <><Eye className="size-3.5" /> Show</>}
+                  </button>
                 </div>
               </div>
-            </Reorder.Item>
+            </motion.div>
           ))}
-        </Reorder.Group>
+        </div>
       )}
 
       <DeleteModal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} onConfirm={() => deleteMutation.mutate(deleteTarget._id)} title={`Delete "${deleteTarget?.name}"?`} loading={deleteMutation.isPending} />

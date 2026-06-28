@@ -131,7 +131,7 @@ export default function AdminLayout() {
   )
 
   return (
-    <div className="min-h-screen bg-base-200 flex">
+    <div className="min-h-screen bg-base-200 flex overflow-x-hidden max-w-full">
       <AnimatePresence initial={false}>
         {sidebarOpen && (
           <motion.aside
@@ -166,25 +166,25 @@ export default function AdminLayout() {
 
       <div className="flex-1 flex flex-col min-h-screen min-w-0">
           <header className="sticky top-0 z-30 bg-base-100/80 backdrop-blur-xl border-b border-base-200 lg:relative">
-          <div className="flex items-center justify-between px-4 lg:px-6 h-16">
-            <div className="flex items-center gap-3">
-              <button onClick={() => setMobileOpen(true)} className="lg:hidden btn btn-ghost btn-circle btn-sm">
+          <div className="flex items-center justify-between px-4 lg:px-6 h-16 gap-3">
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              <button onClick={() => setMobileOpen(true)} className="lg:hidden btn btn-ghost btn-circle btn-sm shrink-0">
                 <Menu className="size-5" />
               </button>
               {!sidebarOpen && (
-                <button onClick={() => setSidebarOpen(true)} className="hidden lg:flex btn btn-ghost btn-circle btn-sm text-base-content/40 hover:text-base-content">
+                <button onClick={() => setSidebarOpen(true)} className="hidden lg:flex btn btn-ghost btn-circle btn-sm text-base-content/40 hover:text-base-content shrink-0">
                   <PanelLeft className="size-4" />
                 </button>
               )}
-              {/* Breadcrumb */}
-              <div className="hidden sm:flex items-center gap-1.5 text-sm">
-                <span className="text-base-content/40">Admin</span>
-                <ChevronRight className="size-3 text-base-content/20" />
-                <span className="font-medium text-base-content">{currentPage}</span>
+              <span className="sm:hidden font-semibold text-sm truncate text-base-content">{currentPage}</span>
+              <div className="hidden sm:flex items-center gap-1.5 text-sm min-w-0">
+                <span className="text-base-content/40 shrink-0">Admin</span>
+                <ChevronRight className="size-3 text-base-content/20 shrink-0" />
+                <span className="font-medium text-base-content truncate">{currentPage}</span>
               </div>
             </div>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5 shrink-0">
               <div className="relative" ref={notifRef}>
                 <button onClick={() => setNotifOpen(!notifOpen)} className="btn btn-ghost btn-circle btn-sm relative hover:bg-base-200">
                   <Bell className="size-4.5" />
@@ -270,7 +270,7 @@ export default function AdminLayout() {
           </div>
         </header>
 
-        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-x-hidden pt-16 md:pt-20 lg:pt-0">
+        <main className="flex-1 w-full max-w-full min-w-0 p-4 md:p-6 lg:p-8 overflow-x-hidden">
           <Outlet />
         </main>
       </div>

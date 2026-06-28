@@ -47,7 +47,7 @@ const fieldGroups = [
 const labelClass = 'block text-[11px] font-semibold uppercase tracking-wider text-base-content/40'
 const fieldWrapClass = 'form-control w-full flex flex-col gap-2.5'
 const fieldsStackClass = 'flex flex-col gap-6'
-const cardClass = 'bg-base-100 rounded-2xl border border-base-200 p-7 shadow-sm hover:shadow-md transition-shadow'
+const cardClass = 'bg-base-100 rounded-2xl border border-base-200 p-4 sm:p-6 lg:p-7 shadow-sm hover:shadow-md transition-shadow w-full max-w-full'
 const cardHeaderClass = 'flex items-center gap-3 mb-7 pb-5 border-b border-base-200'
 const inputClass = 'input w-full rounded-lg border border-base-300/70 bg-base-200/70 px-3.5 h-11 text-sm text-base-content placeholder:text-base-content/30 focus:border-primary/60 focus:bg-base-200 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-colors'
 const textareaClass = 'textarea w-full rounded-lg border border-base-300/70 bg-base-200/70 px-3.5 py-3 text-sm text-base-content placeholder:text-base-content/30 focus:border-primary/60 focus:bg-base-200 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-colors min-h-[100px] resize-y leading-relaxed'
@@ -70,10 +70,10 @@ export default function AdminSettings() {
   })
 
   return (
-    <div>
+    <div className="w-full max-w-full min-w-0">
       <SectionHeader title="Site Settings" description="Customize your website" />
-      <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="space-y-10">
-        <div className="grid md:grid-cols-2 gap-8">
+      <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="space-y-8 sm:space-y-10 w-full max-w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 w-full">
           {fieldGroups.map((group, gi) => {
             const Icon = group.icon
             return (
@@ -159,10 +159,10 @@ export default function AdminSettings() {
           </motion.div>
         </div>
 
-        <div className="flex justify-end sticky bottom-6 pt-2">
+        <div className="flex justify-stretch sm:justify-end pt-2">
           <button
             type="submit"
-            className="btn h-11 min-h-11 rounded-xl border-0 bg-primary text-white font-semibold gap-2 px-8 shadow-md shadow-primary/30 hover:brightness-110 hover:shadow-lg transition-all disabled:opacity-50"
+            className="btn h-11 min-h-11 rounded-xl border-0 bg-primary text-white font-semibold gap-2 px-6 sm:px-8 shadow-md shadow-primary/30 hover:brightness-110 hover:shadow-lg transition-all disabled:opacity-50 w-full sm:w-auto"
             disabled={!isDirty || mutation.isPending}
           >
             {mutation.isPending ? <span className="loading loading-spinner loading-sm" /> : <Save className="size-4" />}
