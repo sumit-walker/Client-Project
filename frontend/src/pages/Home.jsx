@@ -33,9 +33,9 @@ export default function Home() {
     : []
 
   return (
-    <div>
-      <section id="hero" ref={heroRef} className="relative min-h-screen overflow-hidden pt-16">
-        <motion.div style={{ scale: heroScale }} className="absolute inset-0">
+    <div className="overflow-x-hidden max-w-full">
+      <section id="hero" ref={heroRef} className="relative min-h-screen overflow-hidden pt-16 w-full">
+        <motion.div style={{ scale: heroScale }} className="absolute inset-0 overflow-hidden">
           <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=1920" alt="" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
         </motion.div>
@@ -57,15 +57,15 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section className="py-16 md:py-20 lg:py-28 bg-base-100">
+      <section className="py-16 md:py-20 lg:py-28 bg-base-100 overflow-x-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-10 lg:gap-20 items-center">
           <AnimatedSection variant="slideLeft">
-            <div className="relative">
+            <div className="relative max-w-full">
               <div className="relative overflow-hidden rounded-2xl">
                 <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800" alt="Artist" className="w-full h-[300px] md:h-[500px] object-cover rounded-2xl" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-2xl" />
               </div>
-              <div className="absolute -bottom-5 -right-5 md:-bottom-6 md:-right-6 w-28 h-28 md:w-40 md:h-40 rounded-2xl bg-primary/20 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-xl">
+              <div className="absolute bottom-3 right-3 md:bottom-4 md:right-4 w-28 h-28 md:w-40 md:h-40 rounded-2xl bg-primary/20 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-xl">
                 <div className="text-center"><p className="text-lg md:text-xl font-bold text-primary leading-tight">HD · Air Brush</p><p className="text-[10px] md:text-xs text-base-content/60">Celebrity</p></div>
               </div>
             </div>
@@ -81,11 +81,13 @@ export default function Home() {
                 <div key={i} className="flex items-center gap-3 p-3 md:p-4 rounded-xl bg-base-200"><Check className="text-primary size-4 md:size-5 shrink-0" /><div><p className="font-semibold text-sm">{item.label}</p><p className="text-xs text-base-content/50">{item.sub}</p></div></div>
               ))}
             </div>
-            <ul className="timeline timeline-vertical pt-4">
+            <div className="overflow-x-hidden max-w-full">
+              <ul className="timeline timeline-vertical pt-4 max-w-full">
               {[{ year: 'Studio', text: SITE.owner }, { year: 'Artist', text: SITE.artist }, { year: 'Location', text: 'Gwalior, MP' }, { year: 'Packages', text: 'HD · Air Brush · Celebrity' }].map((item, i) => (
                 <li key={i}><div className="timeline-start timeline-box text-xs bg-primary/10 text-primary border-primary/30">{item.year}</div><div className="timeline-middle"><div className="badge badge-primary badge-sm" /></div><div className="timeline-end timeline-box text-xs bg-base-200">{item.text}</div></li>
               ))}
-            </ul>
+              </ul>
+            </div>
           </AnimatedSection>
         </div>
       </section>
@@ -126,7 +128,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="portfolio" className="py-16 md:py-20 lg:py-28 bg-base-200">
+      <section id="portfolio" className="py-16 md:py-20 lg:py-28 bg-base-200 overflow-x-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-10 md:mb-12">
             <span className="text-primary font-display italic text-base md:text-lg tracking-wider">Our Work</span>

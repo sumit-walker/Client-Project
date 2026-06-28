@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { AlertTriangle, X } from 'lucide-react'
 
-export default function DeleteModal({ open, onClose, onConfirm, title = 'Delete item?', loading }) {
+export default function DeleteModal({ open, onClose, onConfirm, title = 'Delete item?', description = 'This action cannot be undone.', loading }) {
   return (
     <AnimatePresence>
       {open && (
@@ -17,7 +17,7 @@ export default function DeleteModal({ open, onClose, onConfirm, title = 'Delete 
             <div className="flex flex-col items-center text-center gap-3 py-4">
               <div className="p-3 rounded-full bg-error/10"><AlertTriangle className="size-8 text-error" /></div>
               <h3 className="text-lg font-semibold">{title}</h3>
-              <p className="text-sm text-base-content/50">This action cannot be undone.</p>
+              <p className="text-sm text-base-content/50">{description}</p>
               <div className="flex gap-3 mt-2 w-full">
                 <button onClick={onClose} className="btn btn-outline flex-1 rounded-xl">Cancel</button>
                 <button onClick={onConfirm} className="btn btn-error flex-1 rounded-xl text-white" disabled={loading}>

@@ -10,6 +10,12 @@ import DeleteModal from '../../components/admin/DeleteModal'
 import EmptyState from '../../components/admin/EmptyState'
 import Toggle from '../../components/ui/Toggle'
 
+const labelClass = 'block text-[11px] font-semibold uppercase tracking-wider text-base-content/40'
+const inputClass = 'input w-full rounded-lg border border-base-300/70 bg-base-200/70 px-3.5 h-11 text-sm text-base-content placeholder:text-base-content/30 focus:border-primary/60 focus:bg-base-200 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-colors'
+const inputWithIconClass = `${inputClass} pl-10`
+const selectClass = 'select w-full rounded-lg border border-base-300/70 bg-base-200/70 pl-10 pr-3 h-11 text-sm text-base-content focus:border-primary/60 focus:bg-base-200 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-colors'
+const textareaClass = 'textarea w-full rounded-lg border border-base-300/70 bg-base-200/70 px-3.5 py-3 pl-10 text-sm text-base-content placeholder:text-base-content/30 focus:border-primary/60 focus:bg-base-200 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-colors min-h-[80px] resize-y leading-relaxed'
+
 export default function AdminServices() {
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({ name: '', price: '', duration: '', description: '', category: 'Bridal', images: [], features: '', isActive: true, featured: false })
@@ -125,8 +131,8 @@ export default function AdminServices() {
               Cancel
             </button>
           ) : (
-            <button type="button" onClick={() => { resetForm(); setShowForm(true) }} className="btn h-11 min-h-11 rounded-xl border-0 bg-primary text-white font-semibold gap-2 shadow-md shadow-primary/30 hover:brightness-110 hover:shadow-lg transition-all">
-              <Plus className="size-4" /> Add Service
+            <button type="button" onClick={() => { resetForm(); setShowForm(true) }} className="btn h-11 min-h-11 px-5 sm:px-6 rounded-xl border-0 bg-primary text-white font-semibold gap-2 shadow-md shadow-primary/30 hover:brightness-110 hover:shadow-lg transition-all w-full sm:w-auto">
+              <Plus className="size-4 shrink-0" /> Add Service
             </button>
           )
         }
@@ -143,44 +149,44 @@ export default function AdminServices() {
               <p className="text-xs text-base-content/50">Fill in the details below</p>
             </div>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="grid sm:grid-cols-2 gap-5">
-              <label className="form-control">
-                <span className="text-xs font-medium text-base-content/70 mb-1.5">Service Name</span>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid sm:grid-cols-2 gap-6">
+              <label className="form-control flex flex-col gap-2.5">
+                <span className={labelClass}>Service Name</span>
                 <div className="relative">
-                  <Tag className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-base-content/30" />
-                  <input className="input input-bordered rounded-xl bg-base-100 border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm transition-all pl-10 w-full text-sm" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required placeholder="e.g. Signature Bridal Makeup" />
+                  <Tag className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-base-content/30 pointer-events-none" />
+                  <input className={inputWithIconClass} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required placeholder="e.g. Signature Bridal Makeup" />
                 </div>
               </label>
-              <label className="form-control">
-                <span className="text-xs font-medium text-base-content/70 mb-1.5">Price (₹)</span>
+              <label className="form-control flex flex-col gap-2.5">
+                <span className={labelClass}>Price (₹)</span>
                 <div className="relative">
-                  <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-base-content/30" />
-                  <input type="number" className="input input-bordered rounded-xl bg-base-100 border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm transition-all pl-10 w-full text-sm" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} required placeholder="40000" />
+                  <IndianRupee className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-base-content/30 pointer-events-none" />
+                  <input type="number" className={inputWithIconClass} value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} required placeholder="40000" />
                 </div>
               </label>
             </div>
-            <div className="grid sm:grid-cols-2 gap-5">
-              <label className="form-control">
-                <span className="text-xs font-medium text-base-content/70 mb-1.5">Duration</span>
+            <div className="grid sm:grid-cols-2 gap-6">
+              <label className="form-control flex flex-col gap-2.5">
+                <span className={labelClass}>Duration</span>
                 <div className="relative">
-                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-base-content/30" />
-                  <input className="input input-bordered rounded-xl bg-base-100 border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm transition-all pl-10 w-full text-sm" value={form.duration} onChange={e => setForm({ ...form, duration: e.target.value })} required placeholder="3-4 hrs" />
+                  <Clock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-base-content/30 pointer-events-none" />
+                  <input className={inputWithIconClass} value={form.duration} onChange={e => setForm({ ...form, duration: e.target.value })} required placeholder="3-4 hrs" />
                 </div>
               </label>
-              <label className="form-control">
-                <span className="text-xs font-medium text-base-content/70 mb-1.5">Category</span>
+              <label className="form-control flex flex-col gap-2.5">
+                <span className={labelClass}>Category</span>
                 <div className="relative">
-                  <List className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-base-content/30 pointer-events-none" />
-                  <select className="select select-bordered rounded-xl bg-base-100 border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm transition-all pl-10 w-full text-sm" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
+                  <List className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-base-content/30 pointer-events-none" />
+                  <select className={selectClass} value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
                     {serviceCategories.map(c => <option key={c}>{c}</option>)}
                   </select>
                 </div>
               </label>
             </div>
 
-            <div>
-              <span className="text-xs font-medium text-base-content/70 mb-1.5 block">Service Images</span>
+            <div className="flex flex-col gap-2.5">
+              <span className={labelClass}>Service Images</span>
               <div className="mb-3">
                 <Reorder.Group axis="x" values={form.images} onReorder={(ordered) => setForm({ ...form, images: ordered })} className="flex flex-wrap gap-3">
                   {form.images.map((img, i) => (
@@ -206,16 +212,16 @@ export default function AdminServices() {
               <p className="text-[11px] text-base-content/40">Click an image to set as cover. Upload multiple images to create a slider.</p>
             </div>
 
-            <label className="form-control">
-              <span className="text-xs font-medium text-base-content/70 mb-1.5">Description</span>
+            <label className="form-control flex flex-col gap-2.5">
+              <span className={labelClass}>Description</span>
               <div className="relative">
-                <AlignLeft className="absolute left-3 top-3 size-4 text-base-content/30" />
-                <textarea className="textarea textarea-bordered rounded-xl bg-base-100 border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm transition-all pl-10 w-full text-sm min-h-[80px]" rows="3" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} required placeholder="Describe this service..." />
+                <AlignLeft className="absolute left-3.5 top-3.5 size-4 text-base-content/30 pointer-events-none" />
+                <textarea className={textareaClass} rows="3" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} required placeholder="Describe this service..." />
               </div>
             </label>
-            <label className="form-control">
-              <span className="text-xs font-medium text-base-content/70 mb-1.5">Features (comma separated)</span>
-              <input className="input input-bordered rounded-xl bg-base-100 border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm transition-all w-full text-sm" value={form.features} onChange={e => setForm({ ...form, features: e.target.value })} placeholder="Professional Makeup, Premium Products, Hairstyling Included" />
+            <label className="form-control flex flex-col gap-2.5">
+              <span className={labelClass}>Features (comma separated)</span>
+              <input className={inputClass} value={form.features} onChange={e => setForm({ ...form, features: e.target.value })} placeholder="Professional Makeup, Premium Products, Hairstyling Included" />
             </label>
             <div className="grid sm:grid-cols-2 gap-5">
               <div className="form-control flex flex-row items-center gap-3 p-3 bg-base-200 rounded-xl">

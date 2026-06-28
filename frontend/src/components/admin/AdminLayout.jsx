@@ -191,10 +191,12 @@ export default function AdminLayout() {
                   {totalNotifs > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-error text-[10px] font-bold text-white flex items-center justify-center px-1 ring-2 ring-base-100">{totalNotifs > 9 ? '9+' : totalNotifs}</span>}
                 </button>
                 {notifOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-80 bg-base-100 rounded-2xl shadow-2xl border border-base-200 overflow-hidden z-50">
-                    <div className="px-4 py-3 border-b border-base-200 flex items-center justify-between">
-                      <span className="font-semibold text-sm">Notifications</span>
-                      {totalNotifs > 0 && <span className="badge badge-error badge-xs">{totalNotifs} new</span>}
+                  <>
+                    <div className="fixed inset-0 z-40 sm:hidden" onClick={() => setNotifOpen(false)} aria-hidden="true" />
+                    <div className="fixed left-3 right-3 top-[4.25rem] sm:absolute sm:inset-x-auto sm:left-auto sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-80 max-w-[calc(100vw-1.5rem)] bg-base-100 rounded-2xl shadow-2xl border border-base-200 overflow-hidden z-50">
+                    <div className="px-4 py-3 border-b border-base-200 flex items-center justify-between gap-2">
+                      <span className="font-semibold text-sm truncate">Notifications</span>
+                      {totalNotifs > 0 && <span className="badge badge-error badge-xs shrink-0">{totalNotifs} new</span>}
                     </div>
                     <div className="max-h-80 overflow-y-auto divide-y divide-base-200">
                       {notifBookings.length > 0 && (
@@ -232,7 +234,8 @@ export default function AdminLayout() {
                       )}
                     </div>
                     <Link to="/admin/bookings" onClick={() => setNotifOpen(false)} className="block px-4 py-2.5 text-center text-xs text-primary font-medium border-t border-base-200 hover:bg-base-200/50 transition-colors">View all</Link>
-                  </div>
+                    </div>
+                  </>
                 )}
               </div>
               <button onClick={toggleTheme} className="btn btn-ghost btn-circle btn-sm hover:bg-base-200">

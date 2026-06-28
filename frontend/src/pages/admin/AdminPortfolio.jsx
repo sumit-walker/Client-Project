@@ -105,7 +105,7 @@ export default function AdminPortfolio() {
       <SectionHeader
         title="Portfolio"
         description="Manage your portfolio images and videos"
-        action={<button onClick={() => { resetForm(); setShowForm(!showForm) }} className="btn btn-primary rounded-xl text-white gap-2 shadow-sm hover:shadow-md transition-all"><Plus className="size-4" /> {showForm ? 'Cancel' : 'Add New'}</button>}
+        action={<button onClick={() => { resetForm(); setShowForm(!showForm) }} className="btn btn-primary h-11 min-h-11 px-5 sm:px-6 rounded-xl text-white gap-2 shadow-sm hover:shadow-md transition-all w-full sm:w-auto"><Plus className="size-4 shrink-0" /> {showForm ? 'Cancel' : 'Add New'}</button>}
       />
 
       {showForm && (
@@ -199,36 +199,42 @@ export default function AdminPortfolio() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.03 }}
-                whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                className="group relative rounded-2xl overflow-hidden bg-base-100 border border-base-200 shadow-sm hover:shadow-lg transition-all duration-300"
+                className="group rounded-2xl overflow-hidden bg-base-100 border border-base-200 shadow-sm hover:shadow-lg transition-all duration-300"
               >
-                <div className="aspect-[4/3] overflow-hidden">
+                <div className="relative aspect-[4/3] overflow-hidden bg-base-200">
                   {item.type === 'video' ? (
-                    <video src={item.image} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500" />
+                    <video src={item.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   ) : (
-                    <img src={imgs[0]?.url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500" loading="lazy" />
+                    <img src={imgs[0]?.url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                  )}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 pointer-events-none" />
+                  {imgs.length > 1 && (
+                    <div className="absolute top-2 left-2 bg-black/50 text-white text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <ImageIcon className="size-3" /> {imgs.length}
+                    </div>
                   )}
                 </div>
-                {imgs.length > 1 && (
-                  <div className="absolute top-2 left-2 bg-black/50 text-white text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1">
-                    <ImageIcon className="size-3" /> {imgs.length}
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-between p-4">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-white text-sm font-medium truncate">{item.title}</p>
-                    <span className="badge badge-primary badge-xs mt-1">{item.category}</span>
-                  </div>
-                  <div className="flex gap-1 shrink-0 ml-2">
-                    <button onClick={() => startEdit(item)} className="btn btn-ghost btn-xs text-white hover:bg-white/20"><Pencil className="size-3.5" /></button>
-                    <button onClick={() => setDeleteTarget(item)} className="btn btn-ghost btn-xs text-red-300 hover:text-error hover:bg-white/20"><Trash2 className="size-3.5" /></button>
-                  </div>
-                </div>
                 <div className="p-4">
-                  <p className="text-xs font-medium truncate">{item.title}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="badge badge-ghost badge-xs">{item.category}</span>
+                  <p className="text-sm font-medium truncate">{item.title}</p>
+                  <div className="flex items-center gap-2 mt-1.5">
+                    <span className="badge badge-primary badge-xs">{item.category}</span>
                     {item.type === 'video' && <span className="badge badge-info badge-xs">Video</span>}
+                  </div>
+                  <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-base-200">
+                    <button
+                      type="button"
+                      onClick={() => startEdit(item)}
+                      className="btn btn-ghost btn-xs rounded-lg gap-1.5 px-2.5 text-base-content/50 hover:text-base-content"
+                    >
+                      <Pencil className="size-3.5" /> Edit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDeleteTarget(item)}
+                      className="btn btn-ghost btn-xs rounded-lg gap-1.5 px-2.5 text-base-content/50 hover:text-error"
+                    >
+                      <Trash2 className="size-3.5" /> Delete
+                    </button>
                   </div>
                 </div>
               </motion.div>
@@ -241,7 +247,8 @@ export default function AdminPortfolio() {
         open={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
         onConfirm={() => deleteMutation.mutate(deleteTarget._id)}
-        title={`Delete "${deleteTarget?.title}"?`}
+        title="Delete portfolio item?"
+        description={`Are you sure you want to delete "${deleteTarget?.title}"? This cannot be undone.`}
         loading={deleteMutation.isPending}
       />
     </div>

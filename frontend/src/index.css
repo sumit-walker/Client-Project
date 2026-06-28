@@ -3,8 +3,16 @@
 @tailwind utilities;
 
 @layer base {
-  html { scroll-behavior: smooth; }
-  body { @apply transition-colors duration-300; }
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+  body {
+    @apply transition-colors duration-300;
+    overflow-x: hidden;
+    max-width: 100%;
+  }
 }
 
 @layer components {

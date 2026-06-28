@@ -11,7 +11,7 @@ export default function SectionHeader({ title, description, action }) {
         <h1 className="text-3xl font-bold text-base-content tracking-tight">{title}</h1>
         {description && <p className="text-sm text-base-content/50">{description}</p>}
       </div>
-      {action && <div className="shrink-0">{action}</div>}
+      {action && <div className="shrink-0 w-full sm:w-auto">{action}</div>}
     </motion.div>
   )
 }
