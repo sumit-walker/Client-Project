@@ -24,21 +24,27 @@ export default function AdminReviews() {
     queryClient.invalidateQueries({ queryKey: ['reviews'] })
   }
 
+  const apiErr = () => toast.error('Something went wrong. Try again.')
+
   const approveMutation = useMutation({
     mutationFn: (id) => api.put(`/reviews/${id}`, { isApproved: true }),
     onSuccess: () => { invalidate(); toast.success('Approved') },
+    onError: apiErr,
   })
   const hideMutation = useMutation({
     mutationFn: (id) => api.put(`/reviews/${id}`, { isApproved: false }),
     onSuccess: () => { invalidate(); toast.success('Hidden') },
+    onError: apiErr,
   })
   const deleteMutation = useMutation({
     mutationFn: (id) => api.delete(`/reviews/${id}`),
     onSuccess: () => { invalidate(); toast.success('Deleted'); setDeleteTarget(null) },
+    onError: apiErr,
   })
   const saveEditMutation = useMutation({
     mutationFn: ({ id, data }) => api.put(`/reviews/${id}`, data),
     onSuccess: () => { invalidate(); toast.success('Updated'); setEditing(null) },
+    onError: apiErr,
   })
 
   const startEdit = (r) => { setEditing(r._id); setEditText(r.text) }
