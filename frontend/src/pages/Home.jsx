@@ -33,7 +33,7 @@ export default function Home() {
     ? (lbService.images?.length ? lbService.images.map(img => ({ image: img.url, title: lbService.name })) : [{ image: lbService.image || '', title: lbService.name }])
     : []
 
-  const approvedReviews = reviews.filter(r => r.isApproved === true)
+  const approvedReviews = reviews.filter(r => r.isApproved !== false)
 
   const renderTestimonial = (r) => (
     <div className="h-full p-5 md:p-6 text-center space-y-3 flex flex-col">

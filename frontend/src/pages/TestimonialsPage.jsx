@@ -5,7 +5,7 @@ import AnimatedSection from '../components/ui/AnimatedSection'
 
 export default function TestimonialsPage() {
   const { data: reviews = [], isLoading } = useQuery({ queryKey: ['reviews'], queryFn: () => api.get('/reviews').then(r => r.data) })
-  const approved = reviews.filter(r => r.isApproved === true)
+  const approved = reviews.filter(r => r.isApproved !== false)
   const avgRating = approved.length ? (approved.reduce((a, r) => a + r.rating, 0) / approved.length).toFixed(1) : 0
 
   if (isLoading) return <div className="min-h-screen flex items-center justify-center"><span className="loading loading-spinner loading-lg text-primary"></span></div>

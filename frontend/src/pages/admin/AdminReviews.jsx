@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Star, ThumbsUp, Trash2, Pencil, Check, X } from 'lucide-react'
+import { Star, ThumbsUp, EyeOff, Trash2, Pencil, Check, X, MessageSquare } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '../../services/api'
 import SectionHeader from '../../components/admin/SectionHeader'
@@ -22,44 +22,32 @@ export default function AdminReviews() {
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ['admin-reviews'] })
     queryClient.invalidateQueries({ queryKey: ['reviews'] })
-    queryClient.invalidateQueries({ queryKey: ['notif-reviews'] })
   }
 
-  const toggleApprovalMutation = useMutation({
-    mutationFn: ({ id, isApproved }) => api.put(`/reviews/${id}`, { isApproved }),
-    onMutate: async ({ id, isApproved }) => {
-      await queryClient.cancelQueries({ queryKey: ['admin-reviews'] })
-      const previous = queryClient.getQueryData(['admin-reviews'])
-      queryClient.setQueryData(['admin-reviews'], (old = []) =>
-        old.map((r) => (r._id === id ? { ...r, isApproved } : r)),
-      )
-      return { previous }
-    },
-    onSuccess: (_, { isApproved }) => {
-      invalidate()
-      toast.success(isApproved ? 'Review approved' : 'Review hidden — moved to pending')
-    },
-    onError: (_err, _vars, context) => {
-      if (context?.previous) queryClient.setQueryData(['admin-reviews'], context.previous)
-      toast.error('Something went wrong. Try again.')
-    },
-  })
+  const apiErr = () => toast.error('Something went wrong. Try again.')
 
+  const approveMutation = useMutation({
+    mutationFn: (id) => api.put(`/reviews/${id}`, { isApproved: true }),
+    onSuccess: () => { invalidate(); toast.success('Approved') },
+    onError: apiErr,
+  })
+  const hideMutation = useMutation({
+    mutationFn: (id) => api.put(`/reviews/${id}`, { isApproved: false }),
+    onSuccess: () => { invalidate(); toast.success('Hidden') },
+    onError: apiErr,
+  })
   const deleteMutation = useMutation({
     mutationFn: (id) => api.delete(`/reviews/${id}`),
     onSuccess: () => { invalidate(); toast.success('Deleted'); setDeleteTarget(null) },
-    onError: () => toast.error('Something went wrong. Try again.'),
+    onError: apiErr,
   })
-
   const saveEditMutation = useMutation({
     mutationFn: ({ id, data }) => api.put(`/reviews/${id}`, data),
     onSuccess: () => { invalidate(); toast.success('Updated'); setEditing(null) },
-    onError: () => toast.error('Something went wrong. Try again.'),
+    onError: apiErr,
   })
 
   const startEdit = (r) => { setEditing(r._id); setEditText(r.text) }
-
-  const isApproved = (r) => r.isApproved === true
 
   return (
     <div>
@@ -88,15 +76,15 @@ export default function AdminReviews() {
                     </div>
                   </div>
                 ) : (
-                  <div className="w-12 h-12 rounded-full ring-2 ring-primary/20 bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-sm shrink-0">
+                  <div className="w-12 rounded-full ring-2 ring-primary/20 bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-sm shrink-0">
                     {r.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <div className="flex items-center gap-2 mb-1">
                     <h4 className="font-semibold text-sm">{r.name}</h4>
-                    <span className={`badge badge-xs ${isApproved(r) ? 'badge-success' : 'badge-warning'}`}>
-                      {isApproved(r) ? 'Approved' : 'Pending'}
+                    <span className={`badge badge-xs ${r.isApproved ? 'badge-success' : 'badge-warning'}`}>
+                      {r.isApproved ? 'Approved' : 'Pending'}
                     </span>
                   </div>
                   <div className="flex text-yellow-400 gap-0.5 mb-2">
@@ -121,32 +109,14 @@ export default function AdminReviews() {
                     <p className="text-sm text-base-content/60 italic leading-relaxed">"{r.text}"</p>
                   )}
                 </div>
-                <div className="flex flex-col items-end gap-2 shrink-0">
-                  <div className="flex gap-0.5">
-                    {!isApproved(r) && (
-                      <button
-                        type="button"
-                        onClick={() => toggleApprovalMutation.mutate({ id: r._id, isApproved: true })}
-                        className="btn btn-ghost btn-xs rounded-lg gap-1 px-2 text-success hover:text-success"
-                        disabled={toggleApprovalMutation.isPending}
-                        title="Approve review"
-                      >
-                        <ThumbsUp className="size-3.5" />
-                      </button>
-                    )}
-                    <button type="button" onClick={() => startEdit(r)} className="btn btn-ghost btn-xs rounded-lg px-2 text-base-content/50 hover:text-base-content" title="Edit"><Pencil className="size-3.5" /></button>
-                    <button type="button" onClick={() => setDeleteTarget(r)} className="btn btn-ghost btn-xs rounded-lg px-2 text-base-content/50 hover:text-error" title="Delete"><Trash2 className="size-3.5" /></button>
-                  </div>
-                  {!isApproved(r) && (
-                    <button
-                      type="button"
-                      onClick={() => toggleApprovalMutation.mutate({ id: r._id, isApproved: true })}
-                      className="btn btn-ghost btn-xs rounded-lg px-3 h-8 min-h-8 text-xs font-medium text-base-content/70 hover:text-success border border-base-300/70"
-                      disabled={toggleApprovalMutation.isPending}
-                    >
-                      Approve
-                    </button>
+                <div className="flex gap-1 shrink-0">
+                  {!r.isApproved ? (
+                    <button onClick={() => approveMutation.mutate(r._id)} className="btn btn-ghost btn-xs text-success" title="Approve"><ThumbsUp className="size-3.5" /></button>
+                  ) : (
+                    <button onClick={() => hideMutation.mutate(r._id)} className="btn btn-ghost btn-xs text-warning" title="Hide"><EyeOff className="size-3.5" /></button>
                   )}
+                  <button onClick={() => startEdit(r)} className="btn btn-ghost btn-xs" title="Edit"><Pencil className="size-3.5" /></button>
+                  <button onClick={() => setDeleteTarget(r)} className="btn btn-ghost btn-xs text-error" title="Delete"><Trash2 className="size-3.5" /></button>
                 </div>
               </div>
             </motion.div>
