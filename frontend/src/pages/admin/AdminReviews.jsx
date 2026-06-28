@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Star, ThumbsUp, EyeOff, Trash2, Pencil, Check, X, MessageSquare } from 'lucide-react'
+import { Star, Trash2, Pencil, Check, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '../../services/api'
 import SectionHeader from '../../components/admin/SectionHeader'
@@ -26,16 +26,6 @@ export default function AdminReviews() {
 
   const apiErr = () => toast.error('Something went wrong. Try again.')
 
-  const approveMutation = useMutation({
-    mutationFn: (id) => api.put(`/reviews/${id}`, { isApproved: true }),
-    onSuccess: () => { invalidate(); toast.success('Approved') },
-    onError: apiErr,
-  })
-  const hideMutation = useMutation({
-    mutationFn: (id) => api.put(`/reviews/${id}`, { isApproved: false }),
-    onSuccess: () => { invalidate(); toast.success('Hidden') },
-    onError: apiErr,
-  })
   const deleteMutation = useMutation({
     mutationFn: (id) => api.delete(`/reviews/${id}`),
     onSuccess: () => { invalidate(); toast.success('Deleted'); setDeleteTarget(null) },
@@ -110,11 +100,6 @@ export default function AdminReviews() {
                   )}
                 </div>
                 <div className="flex gap-1 shrink-0">
-                  {!r.isApproved ? (
-                    <button onClick={() => approveMutation.mutate(r._id)} className="btn btn-ghost btn-xs text-success" title="Approve"><ThumbsUp className="size-3.5" /></button>
-                  ) : (
-                    <button onClick={() => hideMutation.mutate(r._id)} className="btn btn-ghost btn-xs text-warning" title="Hide"><EyeOff className="size-3.5" /></button>
-                  )}
                   <button onClick={() => startEdit(r)} className="btn btn-ghost btn-xs" title="Edit"><Pencil className="size-3.5" /></button>
                   <button onClick={() => setDeleteTarget(r)} className="btn btn-ghost btn-xs text-error" title="Delete"><Trash2 className="size-3.5" /></button>
                 </div>
