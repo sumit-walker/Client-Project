@@ -159,15 +159,13 @@ export default function Home() {
             {reviews.filter(r => r.isApproved !== false).slice(0, 5).map((r, i) => (
               <div key={r._id} id={`slide-${i}`} className="carousel-item w-full">
                 <div className="w-full p-6 md:p-12 text-center space-y-4 md:space-y-6">
-                  <div className="avatar">
-                    {r.image ? (
-                      <div className="w-16 md:w-20 rounded-full ring-2 ring-primary/30 ring-offset-2 ring-offset-base-100"><img src={r.image} alt={r.name} /></div>
-                    ) : (
-                      <div className="w-16 md:w-20 rounded-full ring-2 ring-primary/30 ring-offset-2 ring-offset-base-100 bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-xl md:text-2xl">
-                        {r.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
-                      </div>
-                    )}
-                  </div>
+                  {r.image && r.image !== '' ? (
+                    <div className="avatar"><div className="w-16 md:w-20 rounded-full ring-2 ring-primary/30 ring-offset-2 ring-offset-base-100"><img src={r.image} alt={r.name} /></div></div>
+                  ) : (
+                    <div className="w-16 md:w-20 rounded-full ring-2 ring-primary/30 ring-offset-2 ring-offset-base-100 bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-xl md:text-2xl mx-auto">
+                      {r.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                    </div>
+                  )}
                   <div className="flex justify-center gap-1 text-yellow-400">{Array.from({ length: 5 }).map((_, s) => <Star key={s} className={`size-4 md:size-5 ${s < r.rating ? 'fill-current' : 'opacity-30'}`} />)}</div>
                   <p className="text-base md:text-xl text-base-content/70 italic leading-relaxed">"{r.text}"</p>
                   <div><p className="font-semibold text-sm md:text-base">{r.name}</p></div>

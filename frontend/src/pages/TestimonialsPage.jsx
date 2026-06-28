@@ -30,10 +30,10 @@ export default function TestimonialsPage() {
                 <div className="bg-base-200 p-8 rounded-2xl shadow-sm border border-base-200">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="avatar">
-                      {r.image ? (
-                        <div className="w-14 rounded-full ring-2 ring-primary/20"><img src={r.image} alt={r.name} /></div>
+                      {r.image && r.image !== '' ? (
+                        <div className="avatar"><div className="w-14 rounded-full ring-2 ring-primary/20"><img src={r.image} alt={r.name} /></div></div>
                       ) : (
-                        <div className="w-14 rounded-full ring-2 ring-primary/20 bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-lg">
+                        <div className="w-14 rounded-full ring-2 ring-primary/20 bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-lg shrink-0">
                           {r.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
                         </div>
                       )}

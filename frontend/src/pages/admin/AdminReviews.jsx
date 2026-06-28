@@ -58,17 +58,17 @@ export default function AdminReviews() {
               className="bg-base-100 rounded-2xl border border-base-200 p-5 shadow-sm hover:shadow-md transition-all"
             >
               <div className="flex items-start gap-4">
-                <div className="avatar shrink-0">
-                  {r.image ? (
+                {r.image && r.image !== '' ? (
+                  <div className="avatar shrink-0">
                     <div className="w-12 rounded-full ring-2 ring-primary/20">
                       <img src={r.image} alt={r.name} />
                     </div>
-                  ) : (
-                    <div className="w-12 rounded-full ring-2 ring-primary/20 bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-sm">
-                      {r.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
-                    </div>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <div className="w-12 rounded-full ring-2 ring-primary/20 bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-sm shrink-0">
+                    {r.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <h4 className="font-semibold text-sm">{r.name}</h4>
