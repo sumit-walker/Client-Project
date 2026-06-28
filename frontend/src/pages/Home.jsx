@@ -8,6 +8,7 @@ import api from '../services/api'
 import AnimatedSection from '../components/ui/AnimatedSection'
 import Lightbox from '../components/ui/Lightbox'
 import ServiceCard from '../components/ui/ServiceCard'
+import TestimonialShowcase from '../components/ui/TestimonialShowcase'
 import { SITE } from '../constants/site'
 
 export default function Home() {
@@ -31,6 +32,31 @@ export default function Home() {
   const lbItems = lbService
     ? (lbService.images?.length ? lbService.images.map(img => ({ image: img.url, title: lbService.name })) : [{ image: lbService.image || '', title: lbService.name }])
     : []
+
+  const approvedReviews = reviews.filter(r => r.isApproved !== false).slice(0, 5)
+
+  const renderTestimonial = (r) => (
+    <div className="w-full p-6 md:p-12 text-center space-y-4 md:space-y-6">
+      {r.image && r.image !== '' ? (
+        <div className="flex justify-center">
+          <div className="w-16 md:w-20 h-16 md:h-20 rounded-full ring-2 ring-primary/30 ring-offset-2 ring-offset-base-100 overflow-hidden">
+            <img src={r.image} alt={r.name} className="w-full h-full object-cover" />
+          </div>
+        </div>
+      ) : (
+        <div className="w-16 md:w-20 h-16 md:h-20 rounded-full ring-2 ring-primary/30 ring-offset-2 ring-offset-base-100 bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-xl md:text-2xl mx-auto">
+          {r.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+        </div>
+      )}
+      <div className="flex justify-center gap-1 text-yellow-400">
+        {Array.from({ length: 5 }).map((_, s) => (
+          <Star key={s} className={`size-4 md:size-5 ${s < r.rating ? 'fill-current' : 'opacity-30'}`} />
+        ))}
+      </div>
+      <p className="text-base md:text-xl text-base-content/70 italic leading-relaxed max-w-2xl mx-auto">"{r.text}"</p>
+      <p className="font-semibold text-sm md:text-base">{r.name}</p>
+    </div>
+  )
 
   return (
     <div className="overflow-x-hidden max-w-full">
@@ -155,29 +181,7 @@ export default function Home() {
             <span className="text-primary font-display italic text-base md:text-lg tracking-wider">Kind Words</span>
             <h2 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold text-base-content mt-3">What Clients Say</h2>
           </AnimatedSection>
-          <div className="carousel w-full max-w-3xl mx-auto rounded-2xl">
-            {reviews.filter(r => r.isApproved !== false).slice(0, 5).map((r, i) => (
-              <div key={r._id} id={`slide-${i}`} className="carousel-item w-full">
-                <div className="w-full p-6 md:p-12 text-center space-y-4 md:space-y-6">
-                  {r.image && r.image !== '' ? (
-                    <div className="avatar"><div className="w-16 md:w-20 rounded-full ring-2 ring-primary/30 ring-offset-2 ring-offset-base-100"><img src={r.image} alt={r.name} /></div></div>
-                  ) : (
-                    <div className="w-16 md:w-20 rounded-full ring-2 ring-primary/30 ring-offset-2 ring-offset-base-100 bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-xl md:text-2xl mx-auto">
-                      {r.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
-                    </div>
-                  )}
-                  <div className="flex justify-center gap-1 text-yellow-400">{Array.from({ length: 5 }).map((_, s) => <Star key={s} className={`size-4 md:size-5 ${s < r.rating ? 'fill-current' : 'opacity-30'}`} />)}</div>
-                  <p className="text-base md:text-xl text-base-content/70 italic leading-relaxed">"{r.text}"</p>
-                  <div><p className="font-semibold text-sm md:text-base">{r.name}</p></div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="flex justify-center gap-2 mt-6">
-            {reviews.filter(r => r.isApproved !== false).slice(0, 5).map((_, i) => (
-              <a key={i} href={`#slide-${i}`} className="btn btn-xs btn-circle bg-base-300 hover:bg-primary border-none"></a>
-            ))}
-          </div>
+          <TestimonialShowcase reviews={approvedReviews} renderReview={renderTestimonial} />
         </div>
       </section>
 

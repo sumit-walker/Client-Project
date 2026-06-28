@@ -55,6 +55,21 @@
   bottom: 4px !important;
 }
 
+.testimonial-swiper {
+  @apply w-full;
+}
+.testimonial-swiper .swiper-pagination {
+  position: relative !important;
+  bottom: 0 !important;
+  padding: 0 0 1.25rem;
+}
+.testimonial-swiper .swiper-pagination-bullet {
+  @apply bg-base-content opacity-30;
+}
+.testimonial-swiper .swiper-pagination-bullet-active {
+  @apply bg-primary opacity-100;
+}
+
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
