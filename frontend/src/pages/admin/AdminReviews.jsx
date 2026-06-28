@@ -19,21 +19,26 @@ export default function AdminReviews() {
     queryFn: () => api.get('/reviews?admin=true').then(r => r.data),
   })
 
+  const invalidate = () => {
+    queryClient.invalidateQueries({ queryKey: ['admin-reviews'] })
+    queryClient.invalidateQueries({ queryKey: ['reviews'] })
+  }
+
   const approveMutation = useMutation({
     mutationFn: (id) => api.put(`/reviews/${id}`, { isApproved: true }),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['admin-reviews'] }); toast.success('Approved') },
+    onSuccess: () => { invalidate(); toast.success('Approved') },
   })
   const hideMutation = useMutation({
     mutationFn: (id) => api.put(`/reviews/${id}`, { isApproved: false }),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['admin-reviews'] }); toast.success('Hidden') },
+    onSuccess: () => { invalidate(); toast.success('Hidden') },
   })
   const deleteMutation = useMutation({
     mutationFn: (id) => api.delete(`/reviews/${id}`),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['admin-reviews'] }); toast.success('Deleted'); setDeleteTarget(null) },
+    onSuccess: () => { invalidate(); toast.success('Deleted'); setDeleteTarget(null) },
   })
   const saveEditMutation = useMutation({
     mutationFn: ({ id, data }) => api.put(`/reviews/${id}`, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['admin-reviews'] }); toast.success('Updated'); setEditing(null) },
+    onSuccess: () => { invalidate(); toast.success('Updated'); setEditing(null) },
   })
 
   const startEdit = (r) => { setEditing(r._id); setEditText(r.text) }
