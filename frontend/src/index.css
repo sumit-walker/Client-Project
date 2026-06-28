@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply transition-colors duration-300; }
+}
+
+@layer components {
+  .glass { @apply backdrop-blur-xl bg-white/10 dark:bg-black/20 border border-white/20 shadow-xl; }
+  .text-gradient { @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent; }
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { @apply bg-base-200; }
+::-webkit-scrollbar-thumb { @apply bg-primary rounded-full; }
+
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+.service-swiper .swiper-button-next,
+.service-swiper .swiper-button-prev {
+  @apply text-white scale-75 transition-opacity duration-300;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  opacity: 0.6;
+}
+.service-swiper:hover .swiper-button-next,
+.service-swiper:hover .swiper-button-prev {
+  @apply opacity-100;
+}
+@media (max-width: 480px) {
+  .service-swiper .swiper-button-next,
+  .service-swiper .swiper-button-prev {
+    @apply hidden;
+  }
+}
+.service-swiper .swiper-pagination-bullet {
+  @apply bg-white/70;
+}
+.service-swiper .swiper-pagination-bullet-active {
+  @apply bg-white;
+}
+.service-swiper .swiper-button-next::after,
+.service-swiper .swiper-button-prev::after { font-size: 16px; }
+.service-swiper .swiper-pagination {
+  bottom: 4px !important;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+.animate-float { animation: float 4s ease-in-out infinite; }
