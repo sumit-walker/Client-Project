@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Plus, Trash2, Pencil, Clock, Package, IndianRupee, Tag, AlignLeft, List, Star, Eye, EyeOff, ImageUp, X, Loader2, Upload } from 'lucide-react'
+import { Plus, Trash2, Pencil, Clock, Package, IndianRupee, Tag, AlignLeft, List, Star, Eye, EyeOff, X, Loader2, Upload, GripVertical } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { motion, Reorder } from 'framer-motion'
+import { motion, Reorder, useDragControls } from 'framer-motion'
 import api from '../../services/api'
 import { serviceCategories } from '../../utils/helpers'
 import SectionHeader from '../../components/admin/SectionHeader'
@@ -15,6 +15,53 @@ const inputClass = 'input w-full rounded-lg border border-base-300/70 bg-base-20
 const inputWithIconClass = `${inputClass} pl-10`
 const selectClass = 'select w-full rounded-lg border border-base-300/70 bg-base-200/70 pl-10 pr-3 h-11 text-sm text-base-content focus:border-primary/60 focus:bg-base-200 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-colors'
 const textareaClass = 'textarea w-full rounded-lg border border-base-300/70 bg-base-200/70 px-3.5 py-3 pl-10 text-sm text-base-content placeholder:text-base-content/30 focus:border-primary/60 focus:bg-base-200 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-colors min-h-[80px] resize-y leading-relaxed'
+
+function SortableServiceImage({ img, index, onRemove, onSetCover }) {
+  const controls = useDragControls()
+
+  return (
+    <Reorder.Item
+      value={img}
+      dragListener={false}
+      dragControls={controls}
+      whileDrag={{ scale: 1.06, zIndex: 30, boxShadow: '0 12px 28px rgba(0,0,0,0.28)' }}
+      className={`relative group w-20 h-20 rounded-xl overflow-hidden border-2 shrink-0 touch-none ${img.cover ? 'border-primary' : 'border-base-300'}`}
+    >
+      <img src={img.url} alt="" className="w-full h-full object-cover pointer-events-none select-none" draggable={false} />
+      <button
+        type="button"
+        aria-label="Drag to reorder"
+        onPointerDown={(e) => { e.stopPropagation(); controls.start(e) }}
+        className="absolute top-0.5 left-0.5 z-20 p-0.5 rounded-md bg-black/55 text-white cursor-grab active:cursor-grabbing touch-none"
+      >
+        <GripVertical className="size-3.5" />
+      </button>
+      <button
+        type="button"
+        aria-label="Set as cover image"
+        onClick={() => onSetCover(index)}
+        className="absolute inset-0 z-10"
+      />
+      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none z-[11]">
+        <span className="text-white text-[10px] bg-black/60 px-2 py-0.5 rounded">{img.cover ? 'Cover' : 'Set Cover'}</span>
+      </div>
+      <button
+        type="button"
+        aria-label="Remove image"
+        onClick={(e) => { e.stopPropagation(); onRemove(index) }}
+        className="absolute top-0.5 right-0.5 z-20 size-5 rounded-full bg-black/55 text-white opacity-0 group-hover:opacity-100 hover:bg-error transition-all flex items-center justify-center"
+      >
+        <X className="size-3" />
+      </button>
+      {img.cover && (
+        <span className="absolute bottom-0 left-0 right-0 bg-primary text-white text-[10px] font-semibold text-center py-0.5 pointer-events-none z-[12]">Cover</span>
+      )}
+      {!img.cover && (
+        <span className="absolute top-6 left-0.5 z-[12] size-4 rounded-full bg-black/55 text-white text-[9px] font-bold flex items-center justify-center pointer-events-none">{index + 1}</span>
+      )}
+    </Reorder.Item>
+  )
+}
 
 export default function AdminServices() {
   const [showForm, setShowForm] = useState(false)
@@ -187,16 +234,7 @@ export default function AdminServices() {
               <div className="mb-3">
                 <Reorder.Group axis="x" values={form.images} onReorder={(ordered) => setForm({ ...form, images: ordered })} className="flex flex-wrap gap-3">
                   {form.images.map((img, i) => (
-                    <Reorder.Item key={img.url} value={img} className="relative group w-20 h-20 rounded-xl overflow-hidden border-2 shrink-0 cursor-grab active:cursor-grabbing" onClick={() => setCover(i)}>
-                      <img src={img.url} alt="" className="w-full h-full object-cover pointer-events-none" />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
-                        <button type="button" onClick={(e) => { e.stopPropagation(); removeImage(i) }} className="btn btn-ghost btn-xs text-white hover:bg-white/20"><X className="size-3" /></button>
-                      </div>
-                      {img.cover && <span className="absolute bottom-0 left-0 right-0 bg-primary text-white text-[10px] font-semibold text-center py-0.5 pointer-events-none">Cover</span>}
-                      {!img.cover && <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                        <span className="text-white text-[10px] bg-black/60 px-2 py-0.5 rounded">Set Cover</span>
-                      </div>}
-                    </Reorder.Item>
+                    <SortableServiceImage key={img.publicId || img.url} img={img} index={i} onRemove={removeImage} onSetCover={setCover} />
                   ))}
                   <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading}
                     className="w-20 h-20 rounded-xl border-2 border-dashed border-base-300 hover:border-primary/50 flex flex-col items-center justify-center gap-1 text-base-content/30 hover:text-primary transition-all shrink-0"
@@ -206,7 +244,7 @@ export default function AdminServices() {
                   <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => { if (e.target.files?.length) handleUpload([...e.target.files]); e.target.value = '' }} />
                 </Reorder.Group>
               </div>
-              <p className="text-[11px] text-base-content/40">Click an image to set as cover. Upload multiple images to create a slider.</p>
+              <p className="text-[11px] text-base-content/40">Drag the grip icon to reorder photos. Click an image to set as cover. First image is used if no cover is set.</p>
             </div>
 
             <label className="form-control flex flex-col gap-2.5">
@@ -314,7 +352,7 @@ export default function AdminServices() {
                     className="btn btn-ghost btn-xs rounded-lg gap-1.5 px-2.5 text-base-content/50 hover:text-base-content"
                     disabled={toggleMutation.isPending}
                   >
-                    {s.isActive ? <><EyeOff className="size-3.5" /> Hide</> : <><Eye className="size-3.5" /> Show</>}
+                    {s.isActive ? <><Eye className="size-3.5" /> Active</> : <><EyeOff className="size-3.5" /> Inactive</>}
                   </button>
                 </div>
               </div>

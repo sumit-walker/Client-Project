@@ -1,14 +1,47 @@
 import { useState, useRef } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Plus, Trash2, Pencil, Image as ImageIcon, X, Tag, List, Video, Type, Upload, Loader2 } from 'lucide-react'
+import { Plus, Trash2, Pencil, Image as ImageIcon, X, Tag, List, Video, Type, Upload, Loader2, GripVertical } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '../../services/api'
 import SectionHeader from '../../components/admin/SectionHeader'
 import DeleteModal from '../../components/admin/DeleteModal'
 import EmptyState from '../../components/admin/EmptyState'
-import { motion } from 'framer-motion'
+import { motion, Reorder, useDragControls } from 'framer-motion'
 
 const categories = ['Bridal', 'Party', 'Engagement', 'HD Makeup', 'Airbrush', 'Fashion']
+
+function SortablePortfolioImage({ img, index, onRemove }) {
+  const controls = useDragControls()
+
+  return (
+    <Reorder.Item
+      value={img}
+      dragListener={false}
+      dragControls={controls}
+      whileDrag={{ scale: 1.03, zIndex: 30, boxShadow: '0 12px 28px rgba(0,0,0,0.28)' }}
+      className="group relative w-[calc(33.333%-0.35rem)] sm:w-[calc(25%-0.375rem)] md:w-[calc(20%-0.4rem)] aspect-[4/3] rounded-xl overflow-hidden bg-base-200 border-2 border-base-300 shrink-0 touch-none"
+    >
+      <img src={img.url} alt="" className="w-full h-full object-cover pointer-events-none select-none" draggable={false} />
+      <button
+        type="button"
+        aria-label="Drag to reorder"
+        onPointerDown={(e) => { e.stopPropagation(); controls.start(e) }}
+        className="absolute top-1.5 left-1.5 z-20 p-1 rounded-md bg-black/55 text-white cursor-grab active:cursor-grabbing touch-none"
+      >
+        <GripVertical className="size-4" />
+      </button>
+      <span className="absolute bottom-1.5 left-1.5 z-20 size-5 rounded-full bg-black/55 text-white text-[10px] font-bold flex items-center justify-center pointer-events-none">{index + 1}</span>
+      <button
+        type="button"
+        aria-label="Remove image"
+        onClick={() => onRemove(index)}
+        className="absolute top-1.5 right-1.5 z-20 size-6 rounded-full bg-black/55 text-white opacity-0 group-hover:opacity-100 hover:bg-error transition-all flex items-center justify-center"
+      >
+        <X className="size-3.5" />
+      </button>
+    </Reorder.Item>
+  )
+}
 
 function MultiImageUpload({ images, onChange }) {
   const [uploading, setUploading] = useState(false)
@@ -34,27 +67,25 @@ function MultiImageUpload({ images, onChange }) {
 
   return (
     <div>
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 mb-3">
+      <Reorder.Group axis="x" values={images} onReorder={onChange} className="flex flex-wrap gap-2 mb-3">
         {images.map((img, i) => (
-          <div key={i} className="group relative aspect-[4/3] rounded-xl overflow-hidden bg-base-200">
-            <img src={img.url} alt="" className="w-full h-full object-cover" />
-            <button onClick={() => onChange(images.filter((_, j) => j !== i))} className="absolute top-1 right-1 size-5 rounded-full bg-black/50 text-white opacity-0 group-hover:opacity-100 hover:bg-error transition-all flex items-center justify-center"><X className="size-3" /></button>
-          </div>
+          <SortablePortfolioImage key={img.publicId || img.url} img={img} index={i} onRemove={(idx) => onChange(images.filter((_, j) => j !== idx))} />
         ))}
         {uploading && (
-          <div className="aspect-[4/3] rounded-xl bg-base-200 flex items-center justify-center">
+          <div className="w-[calc(33.333%-0.35rem)] sm:w-[calc(25%-0.375rem)] md:w-[calc(20%-0.4rem)] aspect-[4/3] rounded-xl bg-base-200 flex items-center justify-center shrink-0">
             <Loader2 className="size-5 animate-spin text-primary" />
           </div>
         )}
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="aspect-[4/3] rounded-xl border-2 border-dashed border-base-300 hover:border-primary/50 hover:bg-base-200/50 transition-all flex flex-col items-center justify-center gap-1 text-base-content/40 hover:text-primary"
+          className="w-[calc(33.333%-0.35rem)] sm:w-[calc(25%-0.375rem)] md:w-[calc(20%-0.4rem)] aspect-[4/3] rounded-xl border-2 border-dashed border-base-300 hover:border-primary/50 hover:bg-base-200/50 transition-all flex flex-col items-center justify-center gap-1 text-base-content/40 hover:text-primary shrink-0"
         >
           <Upload className="size-5" />
           <span className="text-[10px] font-medium">Upload</span>
         </button>
-      </div>
+      </Reorder.Group>
+      <p className="text-[11px] text-base-content/40 mb-2">Drag the grip icon to reorder photos. Order is saved when you update the item.</p>
       <input ref={inputRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => { if (e.target.files?.length) handleFiles(e.target.files) }} />
     </div>
   )
