@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 const portfolioSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  caption: { type: String },
+  caption: { type: String, required: true },
   image: { type: String },
   cloudinaryId: { type: String },
   images: [{ url: String, publicId: String }],
