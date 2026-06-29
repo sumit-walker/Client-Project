@@ -11,15 +11,60 @@ import ServiceCard from '../components/ui/ServiceCard'
 import TestimonialShowcase from '../components/ui/TestimonialShowcase'
 import { SITE } from '../constants/site'
 
+function SkeletonCard() {
+  return (
+    <div className="bg-base-100 rounded-2xl overflow-hidden border border-base-200 shadow-lg animate-pulse">
+      <div className="aspect-[4/3] bg-base-300" />
+      <div className="p-6 space-y-3">
+        <div className="h-5 bg-base-300 rounded w-3/4" />
+        <div className="h-4 bg-base-300 rounded w-1/3" />
+        <div className="h-3 bg-base-300 rounded w-full" />
+        <div className="h-3 bg-base-300 rounded w-5/6" />
+        <div className="h-10 bg-base-300 rounded-xl mt-2" />
+      </div>
+    </div>
+  )
+}
+
+function SkeletonGrid({ count = 3 }) {
+  return (
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+      {Array.from({ length: count }).map((_, i) => <SkeletonCard key={i} />)}
+    </div>
+  )
+}
+
+function SkeletonPortfolio({ count = 6 }) {
+  return (
+    <div className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4 animate-pulse">
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} className="break-inside-avoid rounded-2xl bg-base-300" style={{ height: `${150 + (i % 3) * 80}px` }} />
+      ))}
+    </div>
+  )
+}
+
+function SkeletonTestimonials() {
+  return (
+    <div className="max-w-7xl mx-auto rounded-2xl bg-base-200/40 border border-base-200 overflow-hidden py-10 px-6">
+      <div className="flex gap-4 justify-center animate-pulse">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="w-[300px] h-48 rounded-xl bg-base-300" />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function Home() {
   const heroRef = useRef(null)
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
   const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.15])
   const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
 
-  const { data: services = [] } = useQuery({ queryKey: ['services'], queryFn: () => api.get('/services').then(r => r.data) })
-  const { data: reviews = [] } = useQuery({ queryKey: ['reviews'], queryFn: () => api.get('/reviews').then(r => r.data) })
-  const { data: portfolio = [] } = useQuery({ queryKey: ['portfolio'], queryFn: () => api.get('/portfolio').then(r => r.data) })
+  const { data: services = [], isLoading: servicesLoading } = useQuery({ queryKey: ['services'], queryFn: () => api.get('/services').then(r => r.data) })
+  const { data: reviews = [], isLoading: reviewsLoading } = useQuery({ queryKey: ['reviews'], queryFn: () => api.get('/reviews').then(r => r.data) })
+  const { data: portfolio = [], isLoading: portfolioLoading } = useQuery({ queryKey: ['portfolio'], queryFn: () => api.get('/portfolio').then(r => r.data) })
 
   const [lbService, setLbService] = useState(null)
   const [lbIndex, setLbIndex] = useState(0)
@@ -144,7 +189,7 @@ export default function Home() {
             <h2 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold text-base-content mt-3">Our Packages</h2>
           </AnimatedSection>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {services.slice(0, 3).map((s, i) => (
+            {servicesLoading ? <SkeletonGrid count={3} /> : services.slice(0, 3).map((s, i) => (
               <ServiceCard key={s._id} service={s} index={i} onImageClick={openLightbox} />
             ))}
           </div>
@@ -160,18 +205,20 @@ export default function Home() {
             <span className="text-primary font-display italic text-base md:text-lg tracking-wider">Our Work</span>
             <h2 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold text-base-content mt-3">Portfolio</h2>
           </AnimatedSection>
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">
-            {portfolio.slice(0, 6).map((item, i) => (
-              <AnimatedSection key={item._id} variant="scale" delay={i * 0.05}>
-                <Link to={`/portfolio`} className="break-inside-avoid relative group rounded-2xl overflow-hidden cursor-pointer block">
-                  <img src={item.images?.[0]?.url || item.image} alt={item.title} className="w-full rounded-2xl transition-all duration-700 group-hover:scale-110" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end p-4 md:p-5">
-                    <div><h4 className="text-white font-display text-sm md:text-lg font-semibold">{item.title}</h4><span className="badge badge-primary badge-outline badge-xs md:badge-sm mt-1 text-white border-white/50">{item.category}</span></div>
-                  </div>
-                </Link>
-              </AnimatedSection>
-            ))}
-          </div>
+          {portfolioLoading ? <SkeletonPortfolio count={6} /> : (
+            <div className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">
+              {portfolio.slice(0, 6).map((item, i) => (
+                <AnimatedSection key={item._id} variant="scale" delay={i * 0.05}>
+                  <Link to={`/portfolio`} className="break-inside-avoid relative group rounded-2xl overflow-hidden cursor-pointer block">
+                    <img src={item.images?.[0]?.url || item.image} alt={item.title} className="w-full rounded-2xl transition-all duration-700 group-hover:scale-110" loading="lazy" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end p-4 md:p-5">
+                      <div><h4 className="text-white font-display text-sm md:text-lg font-semibold">{item.title}</h4><span className="badge badge-primary badge-outline badge-xs md:badge-sm mt-1 text-white border-white/50">{item.category}</span></div>
+                    </div>
+                  </Link>
+                </AnimatedSection>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -181,7 +228,7 @@ export default function Home() {
             <span className="text-primary font-display italic text-base md:text-lg tracking-wider">Kind Words</span>
             <h2 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold text-base-content mt-3">What Clients Say</h2>
           </AnimatedSection>
-          <TestimonialShowcase reviews={approvedReviews} renderReview={renderTestimonial} />
+          {reviewsLoading ? <SkeletonTestimonials /> : <TestimonialShowcase reviews={approvedReviews} renderReview={renderTestimonial} />}
         </div>
       </section>
 
