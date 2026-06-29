@@ -121,8 +121,6 @@ export default function AdminPortfolio() {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!form.images.length) { toast.error('Please upload at least one image'); return }
-    if (!form.title.trim()) { toast.error('Title is required'); return }
-    if (!form.caption.trim()) { toast.error('Caption is required'); return }
     const payload = { title: form.title, caption: form.caption, category: form.category, type: form.type, images: form.images }
     if (editing) updateMutation.mutate({ id: editing, data: payload })
     else createMutation.mutate(payload)
@@ -179,7 +177,7 @@ export default function AdminPortfolio() {
                     <span className="text-xs font-medium text-base-content/70 mb-1.5">Caption</span>
                     <div className="relative">
                       <Type className="absolute left-3 top-3 size-4 text-base-content/30" />
-                      <textarea className="textarea textarea-bordered rounded-xl bg-base-100 border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm transition-all pl-10 w-full text-sm min-h-[60px]" rows="2" value={form.caption} onChange={e => setForm({ ...form, caption: e.target.value })} required placeholder="Portfolio caption" />
+                      <textarea className="textarea textarea-bordered rounded-xl bg-base-100 border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm transition-all pl-10 w-full text-sm min-h-[60px]" rows="2" value={form.caption} onChange={e => setForm({ ...form, caption: e.target.value })} placeholder="Optional caption" />
                     </div>
                   </label>
                   <div className="grid sm:grid-cols-2 gap-5">
