@@ -55,6 +55,16 @@
   bottom: 4px !important;
 }
 
+.portfolio-swiper .swiper-pagination {
+  bottom: 3.5rem !important;
+}
+.portfolio-swiper .swiper-pagination-bullet {
+  @apply bg-white/50;
+}
+.portfolio-swiper .swiper-pagination-bullet-active {
+  @apply bg-white;
+}
+
 .testimonial-swiper {
   @apply w-full overflow-hidden;
 }

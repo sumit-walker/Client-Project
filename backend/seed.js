@@ -63,7 +63,7 @@ const seed = async () => {
   try { await User.collection.dropIndex('username_1') } catch {}
   try { await User.collection.dropIndex('email_1') } catch {}
   await User.deleteMany()
-  await User.create({ name: 'Admin', email: 'admin@mahimakeover.com', password: 'admin123', role: 'admin', phone: '+91 9174568852' })
+  await User.create({ name: 'Admin', email: 'mahimakeover65@gmail.com', password: 'mahi@admin123', role: 'admin', phone: '+91 9174568852' })
   console.log('Users seeded')
 
   await Service.deleteMany()

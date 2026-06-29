@@ -58,16 +58,33 @@ export default function ContactPage() {
           </div>
           <div className="grid md:grid-cols-2 gap-8 md:gap-12">
             <AnimatedSection variant="slideLeft">
-              <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="bg-base-200 p-5 md:p-8 rounded-2xl shadow-md border border-base-200 space-y-4">
-                <h3 className="font-display text-2xl mb-4">Send a Message</h3>
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <label className="form-control"><span className="label-text font-medium mb-1">Name *</span><input {...register('name', { required: true })} className="input input-bordered rounded-xl" /></label>
-                  <label className="form-control"><span className="label-text font-medium mb-1">Email *</span><input type="email" {...register('email', { required: true })} className="input input-bordered rounded-xl" /></label>
+              <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="bg-base-200 p-5 md:p-8 rounded-2xl shadow-md border border-base-200">
+                <h3 className="font-display text-2xl mb-6">Send a Message</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <label className="form-control">
+                    <span className="label-text font-medium mb-1 block">Name *</span>
+                    <input {...register('name', { required: true })} className="input input-bordered rounded-xl w-full" />
+                  </label>
+                  <label className="form-control">
+                    <span className="label-text font-medium mb-1 block">Email *</span>
+                    <input type="email" {...register('email', { required: true })} className="input input-bordered rounded-xl w-full" />
+                  </label>
+                  <label className="form-control">
+                    <span className="label-text font-medium mb-1 block">Phone</span>
+                    <input {...register('phone')} className="input input-bordered rounded-xl w-full" />
+                  </label>
+                  <label className="form-control">
+                    <span className="label-text font-medium mb-1 block">Subject</span>
+                    <input {...register('subject')} className="input input-bordered rounded-xl w-full" />
+                  </label>
+                  <label className="form-control sm:col-span-2">
+                    <span className="label-text font-medium mb-1 block">Message *</span>
+                    <textarea {...register('message', { required: true })} className="textarea textarea-bordered rounded-xl w-full" rows="6" style={{ height: '160px' }}></textarea>
+                  </label>
+                  <div className="sm:col-span-2">
+                    <button type="submit" className="btn btn-primary btn-block rounded-full text-white" disabled={mutation.isPending}>{mutation.isPending ? 'Sending...' : 'Send Message'}</button>
+                  </div>
                 </div>
-                <label className="form-control"><span className="label-text font-medium mb-1">Phone</span><input {...register('phone')} className="input input-bordered rounded-xl" /></label>
-                <label className="form-control"><span className="label-text font-medium mb-1">Subject</span><input {...register('subject')} className="input input-bordered rounded-xl" /></label>
-                <label className="form-control"><span className="label-text font-medium mb-1">Message *</span><textarea {...register('message', { required: true })} className="textarea textarea-bordered rounded-xl" rows="4" /></label>
-                <button type="submit" className="btn btn-primary btn-block rounded-full text-white" disabled={mutation.isPending}>{mutation.isPending ? 'Sending...' : 'Send Message'}</button>
               </form>
             </AnimatedSection>
             <AnimatedSection variant="slideRight">

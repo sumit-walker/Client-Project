@@ -1,8 +1,11 @@
 import { useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/pagination'
+import 'swiper/css/navigation'
 import api from '../services/api'
 import Lightbox from '../components/ui/Lightbox'
 import { portfolioCategories } from '../utils/helpers'
@@ -16,8 +19,8 @@ function PortfolioCard({ item, onImageClick }) {
         <Swiper
           modules={[Navigation, Pagination]}
           navigation
-          pagination={{ clickable: true }}
-          className="aspect-[4/5] [&_.swiper-button-next]:after:content-[''] [&_.swiper-button-prev]:after:content-[''] [&_.swiper-button-next]:!size-8 [&_.swiper-button-prev]:!size-8 [&_.swiper-button-next]:!bg-white/80 [&_.swiper-button-prev]:!bg-white/80 [&_.swiper-button-next]:!rounded-full [&_.swiper-button-prev]:!rounded-full [&_.swiper-button-next]:!text-black [&_.swiper-button-prev]:!text-black [&_.swiper-button-next]:!opacity-0 [&_.swiper-button-prev]:!opacity-0 group-hover:[&_.swiper-button-next]:!opacity-100 group-hover:[&_.swiper-button-prev]:!opacity-100 [&_.swiper-button-next]:!transition-all [&_.swiper-button-prev]:!transition-all [&_.swiper-pagination-bullet-active]:!bg-white"
+          pagination={{ clickable: true, dynamicBullets: true }}
+          className="portfolio-swiper aspect-[4/5] [&_.swiper-button-next]:after:content-[''] [&_.swiper-button-prev]:after:content-[''] [&_.swiper-button-next]:!size-8 [&_.swiper-button-prev]:!size-8 [&_.swiper-button-next]:!bg-white/80 [&_.swiper-button-prev]:!bg-white/80 [&_.swiper-button-next]:!rounded-full [&_.swiper-button-prev]:!rounded-full [&_.swiper-button-next]:!text-black [&_.swiper-button-prev]:!text-black [&_.swiper-button-next]:!opacity-0 [&_.swiper-button-prev]:!opacity-0 group-hover:[&_.swiper-button-next]:!opacity-100 group-hover:[&_.swiper-button-prev]:!opacity-100 [&_.swiper-button-next]:!transition-all [&_.swiper-button-prev]:!transition-all"
         >
           {imgs.map((img, i) => (
             <SwiperSlide key={i}>
@@ -31,11 +34,6 @@ function PortfolioCard({ item, onImageClick }) {
           <h4 className="text-white font-display text-lg">{item.title}</h4>
           {item.caption && <p className="text-white/70 text-xs mt-1 line-clamp-1">{item.caption}</p>}
         </div>
-        {imgs.length > 1 && (
-          <div className="absolute top-3 left-3 bg-black/50 text-white text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 pointer-events-none">
-            <ImageIcon className="size-3" /> {imgs.length}
-          </div>
-        )}
       </div>
     )
   }
