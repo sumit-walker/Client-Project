@@ -170,7 +170,7 @@ export default function AdminPortfolio() {
                     <span className="text-xs font-medium text-base-content/70 mb-1.5">Title</span>
                     <div className="relative">
                       <Tag className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-base-content/30" />
-                      <input className="input input-bordered rounded-xl bg-base-100 border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm transition-all pl-10 w-full text-sm" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required placeholder="Portfolio title" />
+                      <input className="input input-bordered rounded-xl bg-base-100 border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm transition-all pl-10 w-full text-sm" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Portfolio title" />
                     </div>
                   </label>
                   <label className="form-control">
